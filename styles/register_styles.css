@@ -1,0 +1,210 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a14 0%, #141428 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 2rem 0;
+        }
+
+        .register-container {
+            background-color: #141428; /* Azul muy oscuro - misterio, inmersión */
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid #252538;
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e50914; /* Rojo - emoción, pasión */
+            margin-bottom: 2rem;
+        }
+
+        .gold-accent {
+            color: #FFD700; /* Dorado - lujo, premios, experiencia premium */
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #d8d8d8;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #252538;
+            border-radius: 8px;
+            background-color: #0a0a14;
+            color: white;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #e50914; /* Rojo - emoción, pasión */
+            box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        input[type="checkbox"] {
+            margin-top: 0.2rem;
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .checkbox-group a {
+            color: #e50914; 
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .checkbox-group a:hover {
+            color: #FFD700; 
+            text-decoration: underline;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #e50914; 
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .btn:hover {
+            background-color: #c70812;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(229, 9, 20, 0.3);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+            color: #888;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #252538;
+        }
+
+        .divider span {
+            background-color: #141428;
+            padding: 0 1rem;
+            position: relative;
+        }
+
+        .login-link {
+            text-align: center;
+            color: #d8d8d8;
+        }
+
+        .login-link a {
+            color: #e50914; 
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .login-link a:hover {
+            color: #FFD700; 
+            text-decoration: underline;
+        }
+
+        .back-home {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+        }
+
+        .back-home a {
+            color: #e50914; 
+            text-decoration: none;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .back-home a:hover {
+            color: #FFD700; 
+            text-decoration: underline;
+        }
+
+        .password-requirements {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 0.3rem;
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .back-home {
+                position: static;
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+        }
