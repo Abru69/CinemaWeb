@@ -14,8 +14,8 @@ include('includes/db.php'); // Conexión a la base de datos
 <body>
     <header>
         <nav>
-            <img style="width: 50px; height: auto; border-radius: 20%;" src="images/CinemaWeb.png" alt="Logo">
-            <div class="logo">Cinema<span class="gold-accent">Web</span></div>
+            <img style="width: 70px; height: auto; border-radius: 20%;" src="images/CinemaWeb.png" alt="Logo">
+            <div class="logo">Cinema<span class="yellow">Web</span></div>
             <div class="nav-links">
                 <a href="#cartelera">Cartelera</a>
                 <a href="#promociones">Promociones</a>
@@ -35,7 +35,7 @@ include('includes/db.php'); // Conexión a la base de datos
         </section>
 
         <section id="cartelera">
-            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2rem;">Cartelera Actual</h2>
+            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2.2rem; color: #FFC857;">Cartelera Actual</h2>
             <div class="movies-grid">
                 <?php
                 // Consulta segura

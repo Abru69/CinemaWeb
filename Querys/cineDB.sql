@@ -43,7 +43,9 @@ CREATE TABLE funciones (
 
 -- Datos de ejemplo
 INSERT INTO peliculas (titulo, sinopsis, genero, clasificacion, duracion, imagen)
-VALUES ('28 años despues', 'Han pasado casi tres décadas desde que el virus de la rabia escapó de un laboratorio de armas biológicas y ahora, aún en una cuarentena impuesta sin piedad, algunos han encontrado formas de existir entre los infectados.', 'Terror', 'B18', '1h30m', 'Exterminio.jpg'),
+VALUES
+('Lilo y Sticht', 'una prueba de consulta', 'caricatura', '+3', '2h30m', 'lilo.png'),
+ ('28 años despues', 'Han pasado casi tres décadas desde que el virus de la rabia escapó de un laboratorio de armas biológicas y ahora, aún en una cuarentena impuesta sin piedad, algunos han encontrado formas de existir entre los infectados.', 'Terror', 'B18', '1h30m', 'Exterminio.jpg'),
 ('Matrix', 'Un hacker descubre la verdad sobre su realidad.', 'Ciencia ficción', 'B15', '2h16m', 'matrix.jpg');
 
 
@@ -62,8 +64,4 @@ select * from usuarios;
 select * from peliculas;
 select * from salas;
 select * from funciones;
-
-delete from peliculas
-where titulo='Matrix';
-
 
