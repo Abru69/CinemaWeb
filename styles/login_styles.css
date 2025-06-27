@@ -1,177 +1,144 @@
 * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #0a0a14 0%, #141428 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
+body {
+  font-family: Arial, sans-serif;
+  background-color: #35506b;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
 
-        .login-container {
-            background-color: #141428; 
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid #252538;
-        }
+.login-container {
+  background-color: #1a2b3c;
+  padding: 30px;
+  border-radius: 15px;
+  width: 400px;
+  box-shadow: 0 5px 15px black;
+  border: 1px solid #35506b;
+}
 
-        .logo {
-            text-align: center;
-            font-size: 2rem;
-            font-weight: bold;
-            color: #e50914; 
-            margin-bottom: 2rem;
-        }
+.logo {
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 30px;
+}
 
-        .gold-accent {
-            color: #FFD700; 
-        }
+.logo .gold {
+  color: #ffc857;
+}
 
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
+.form-group {
+  margin-bottom: 20px;
+}
 
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #d8d8d8;
-            font-weight: 500;
-        }
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #d8d8d8;
+}
 
-        input[type="email"],
-        input[type="password"] {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #252538;
-            border-radius: 8px;
-            background-color: #0a0a14;
-            color: white;
-            font-size: 1rem;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
+input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #1a2b3c;
+  border-radius: 8px;
+  background-color: #35506b;
+  color: white;
+  font-size: 16px;
+}
 
-        input[type="email"]:focus,
-        input[type="password"]:focus {
-            outline: none;
-            border-color: #e50914; 
-            box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
-        }
+input:focus {
+  border-color: #ffc857;
+  outline: none;
+}
 
-        .btn {
-            width: 100%;
-            padding: 0.8rem;
-            background-color: #e50914; 
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 1rem;
-        }
+.btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #39b050;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
 
-        .btn:hover {
-            background-color: #c70812;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(229, 9, 20, 0.3);
-        }
+.btn:hover {
+  background-color: #2d8a3e;
+}
 
-        .forgot-password {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
+.forgot-password {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-        .forgot-password a {
-            color: #e50914; 
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-        }
+.forgot-password a {
+  color: #448aff;
+  text-decoration: none;
+  font-size: 14px;
+}
 
-        .forgot-password a:hover {
-            color: #FFD700; 
-            text-decoration: underline;
-        }
+.forgot-password a:hover {
+  color: #ffc857;
+  text-decoration: underline;
+}
 
-        .divider {
-            text-align: center;
-            margin: 1.5rem 0;
-            position: relative;
-            color: #888;
-        }
+.divider {
+  text-align: center;
+  margin: 20px 0;
+  color: #888;
+}
 
-        .divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background-color: #252538;
-        }
+.register-link {
+  text-align: center;
+  color: #d8d8d8;
+}
 
-        .divider span {
-            background-color: #141428;
-            padding: 0 1rem;
-            position: relative;
-        }
+.register-link a {
+  color: #448aff;
+  text-decoration: none;
+}
 
-        .register-link {
-            text-align: center;
-            color: #d8d8d8;
-        }
+.register-link a:hover {
+  color: #ffc857;
+  text-decoration: underline;
+}
 
-        .register-link a {
-            color: #e50914;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
+.back-home {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+}
 
-        .register-link a:hover {
-            color: #FFD700; 
-            text-decoration: underline;
-        }
+.back-home a {
+  color: #ffc857;
+  text-decoration: none;
+  font-size: 18px;
+}
 
-        .back-home {
-            position: absolute;
-            top: 2rem;
-            left: 2rem;
-        }
+.back-home a:hover {
+  color: #39b050;
+}
 
-        .back-home a {
-            color: #e50914;
-            text-decoration: none;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: color 0.3s;
-        }
+/* Para celulares */
+@media (max-width: 480px) {
+  .login-container {
+    width: 90%;
+    padding: 20px;
+  }
 
-        .back-home a:hover {
-            color: #FFD700; 
-            text-decoration: underline;
-        }
-
-        @media (max-width: 480px) {
-            .login-container {
-                margin: 1rem;
-                padding: 1.5rem;
-            }
-            
-            .back-home {
-                position: static;
-                text-align: center;
-                margin-bottom: 2rem;
-            }
-        }
+  .back-home {
+    position: static;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+}

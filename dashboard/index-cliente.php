@@ -3,6 +3,8 @@ include('../includes/session.php');
 verificarRol('cliente');
 include('../includes/db.php');
 
+
+
 // Obtener el nombre e inicial
 $nombre = $_SESSION['nombre'];
 $inicial = strtoupper(substr($nombre, 0, 1));
@@ -14,281 +16,13 @@ $inicial = strtoupper(substr($nombre, 0, 1));
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineMax - Mi Cartelera</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #0a0a14;
-            color: white;
-        }
-
-        header {
-            background-color: #141428;
-            padding: 1rem;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #e50914;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .nav-links a:hover {
-            background-color: #e50914;
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #FFD700;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background-color: #e50914;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            background-color: #141428;
-            min-width: 200px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            z-index: 1;
-            border-radius: 8px;
-            border: 1px solid #252538;
-        }
-
-        .dropdown-content a {
-            color: white;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            transition: background-color 0.3s;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #252538;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background-color: #e50914;
-            color: white;
-        }
-
-        .btn-secondary {
-            background-color: transparent;
-            color: white;
-            border: 2px solid #e50914;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(229, 9, 20, 0.3);
-        }
-
-        main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .welcome-section {
-            background: linear-gradient(rgba(10, 10, 20, 0.7), rgba(10, 10, 20, 0.9)), url('/placeholder.svg?height=300&width=1200');
-            background-size: cover;
-            padding: 3rem 2rem;
-            border-radius: 10px;
-            margin-bottom: 3rem;
-            text-align: center;
-        }
-
-        .welcome-section h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: #e50914;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .welcome-section p {
-            font-size: 1.2rem;
-            color: #d8d8d8;
-        }
-
-        .section-title {
-            position: relative;
-            margin-bottom: 2rem;
-            font-size: 2rem;
-            color: #d8d8d8;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 80px;
-            height: 3px;
-            background-color: #e50914;
-        }
-
-        .movies-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .movie-card {
-            background-color: #141428;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid #252538;
-            position: relative;
-        }
-
-        .movie-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(229, 9, 20, 0.2);
-        }
-
-        .movie-poster {
-            width: 100%;
-            height: 400px;
-            background-color: #252538;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: #888;
-        }
-
-        .movie-info {
-            padding: 1.5rem;
-        }
-
-        .movie-title {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-            color: #e50914;
-        }
-
-        .movie-genre {
-            color: #d8d8d8;
-            margin-bottom: 1rem;
-        }
-
-        .movie-times {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .time-slot {
-            background-color: #252538;
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.9rem;
-            border: 1px solid #3a3a5a;
-            transition: background-color 0.3s;
-            cursor: pointer;
-        }
-
-        .time-slot:hover {
-            background-color: #e50914;
-        }
-
-        .gold-accent {
-            color: #FFD700;
-        }
-
-        footer {
-            background-color: #141428;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            color: #d8d8d8;
-            border-top: 1px solid #252538;
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .movies-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles/cliente_styles.css">
 </head>
 
 <body>
     <header>
         <nav>
-            <div class="logo">Cinema<span class="gold-accent">Web</span></div>
+            <div class="logo">CINE<span class="gold-accent">MAX</span></div>
             <div class="nav-links">
                 <a href="#cartelera">Cartelera</a>
                 <a href="#mis-reservas">Mis Reservas</a>
@@ -321,8 +55,7 @@ $inicial = strtoupper(substr($nombre, 0, 1));
         <section id="cartelera">
             <h2 class="section-title">Cartelera <span class="gold-accent">Actual</span></h2>
             <div style="margin-bottom: 2rem; text-align: center;">
-                <input type="text" id="buscador" placeholder="Buscar por título, género o clasificación..."
-                    style="padding: 0.7rem 1rem; width: 80%; border-radius: 10px; border: 1px solid #252538; background: #141428; color: white;">
+                <input type="text" id="buscador" placeholder="Buscar por título, género o clasificación...">
             </div>
             <!-- Resultados -->
             <div class="movies-grid" id="resultados">

@@ -1,0 +1,278 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #35506B;
+            color: white;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #1A2B3C;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #FFFFFF;
+            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+        }
+
+        .admin-badge {
+            background-color: #FFC857;
+            color: #1A2B3C;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 1rem;
+            text-shadow: 0 0 black;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #FFC857;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #39b050;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #1A2B3C;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 8px;
+            border: 1px solid #35506B;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #35506B;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .welcome-section {
+            background: linear-gradient(135deg, #1A2B3C 0%, #35506B 100%);
+            padding: 3rem 2rem;
+            border-radius: 15px;
+            margin-bottom: 3rem;
+            text-align: center;
+            border: 1px solid #35506B;
+        }
+
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #FFC857;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .welcome-section p {
+            font-size: 1.2rem;
+            color: #d8d8d8;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .admin-card {
+            background-color: #1A2B3C;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #35506B;
+            text-align: center;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 200, 87, 0.3);
+        }
+
+        .admin-card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #39b050;
+        }
+
+        .admin-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #FFC857;
+        }
+
+        .admin-card p {
+            color: #d8d8d8;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: #39b050;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2d8a3e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(57, 176, 80, 0.3);
+        }
+
+        .stats-section {
+            background-color: #1A2B3C;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border: 1px solid #35506B;
+        }
+
+        .stats-title {
+            font-size: 1.8rem;
+            color: #FFC857;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            background-color: #35506B;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #1A2B3C;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #39b050;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #d8d8d8;
+            font-size: 0.9rem;
+        }
+
+        .gold-accent {
+            color: #FFC857;
+        }
+
+        .logout-btn {
+            background-color: #35506B;
+            color: white;
+            border: 2px solid #448AFF;
+        }
+
+        .logout-btn:hover {
+            background-color: #448AFF;
+            color: white;
+            box-shadow: 0 4px 8px rgba(68, 138, 255, 0.3);
+        }
+
+        footer {
+            background-color: #1A2B3C;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: #d8d8d8;
+            border-top: 1px solid #35506B;
+        }
+
+        @media (max-width: 768px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .welcome-section h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
