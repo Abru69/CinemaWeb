@@ -15,14 +15,14 @@ $inicial = strtoupper(substr($nombre, 0, 1));
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineMax - Mi Cartelera</title>
+    <title>CinemaWeb - Mi Cartelera</title>
     <link rel="stylesheet" href="styles/cliente_styles.css">
 </head>
 
 <body>
     <header>
         <nav>
-            <div class="logo">CINE<span class="gold-accent">MAX</span></div>
+            <div class="logo">Cinema<span class="gold-accent">Web</span></div>
             <div class="nav-links">
                 <a href="#cartelera">Cartelera</a>
                 <a href="#mis-reservas">Mis Reservas</a>
