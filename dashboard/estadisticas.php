@@ -1,5 +1,4 @@
 <?php
-<?php
 include('../includes/session.php');
 verificarRol('admin');
 include('../includes/db.php');

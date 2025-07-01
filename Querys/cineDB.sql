@@ -65,3 +65,15 @@ select * from peliculas;
 select * from salas;
 select * from funciones;
 
+SET SQL_SAFE_UPDATES = 0;
+
+DELETE FROM peliculas;
+
+ALTER TABLE usuarios AUTO_INCREMENT = 1;
+
+DELETE  FROM usuarios
+WHERE nombre = 'Alan';
+
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE peliculas ADD COLUMN sala_id INT;

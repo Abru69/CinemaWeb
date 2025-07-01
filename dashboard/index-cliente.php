@@ -69,7 +69,7 @@ $inicial = strtoupper(substr($nombre, 0, 1));
                     while ($peli = $peliculas->fetch_assoc()) {
                         echo '<div class="movie-card">';
                         echo '  <div class="movie-poster">';
-                        echo "    <img src='../images/{$peli['imagen']}' alt='{$peli['titulo']}' style='width: 100%; height: 100%; object-fit: cover;'>";
+                        echo "    <img src='../images/{$peli['imagen']}' alt='{$peli['titulo']}' style='width: AUTO; height: 100%; object-fit: cover;'>";
                         echo '  </div>';
                         echo '  <div class="movie-info">';
                         echo '    <h3 class="movie-title">' . htmlspecialchars($peli['titulo']) . '</h3>';

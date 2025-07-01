@@ -3,6 +3,10 @@ include('../../../includes/db.php');
 include('../../../includes/session.php');
 verificarRol('admin');
 
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 $resultado = $conn->query("SELECT * FROM peliculas");
 ?>
 
@@ -53,13 +57,11 @@ $resultado = $conn->query("SELECT * FROM peliculas");
                             </div>
                             <div>
                                 <a href="editar.php?id=<?= $pelicula['id'] ?>" class="btn btn-primary">
-                                    ✏️ Editar
+                                    Editar
                                 </a>
-                                <a href="eliminar.php?id=<?= $pelicula['id'] ?>" 
-                                class="btn logout-btn" 
-                                onclick="return confirm('¿Eliminar esta película?')">
-                                🗑️ Eliminar
-                                </a>
+                                <button type="button" class="btn logout-btn eliminar-btn" data-id="<?= $pelicula['id'] ?>">
+                                    Eliminar
+                                </button>
                             </div>
                         </div>
                     <?php endwhile; ?>
@@ -74,7 +76,32 @@ $resultado = $conn->query("SELECT * FROM peliculas");
     </main>
 
     <footer>
-        <p>&copy; 2025 <span style="color: #FFC857;">CineMax</span>. Todos los derechos reservados.</p>
+        <p>&copy; 2025 <span style="color: #FFC857;">CinemaWeb</span>. Todos los derechos reservados.</p>
     </footer>
+    <script>
+        const csrfToken = '<?= $_SESSION['csrf_token'] ?>';
+        document.querySelectorAll('.eliminar-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!confirm('¿Eliminar esta película?')) return;
+                const id = this.getAttribute('data-id');
+                const formData = new FormData();
+                formData.append('id', id);
+                formData.append('csrf_token', csrfToken);
+
+                fetch('eliminar.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.text())
+                .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+                .then(data => {
+                    const status = data.querySelector('status').textContent;
+                    const msg = data.querySelector('message').textContent;
+                    alert(msg);
+                    if (status === 'success') location.reload();
+                });
+            });
+        });
+    </script>
 </body>
 </html>

@@ -54,7 +54,7 @@ include('includes/db.php'); // Conexión a la base de datos
 
                         echo '<div class="movie-card">';
                         echo '  <div class="movie-poster">';
-                        echo '    <img src="assets/images/' . $imagen . '" alt="' . $titulo . '">';
+                        echo '    <img src="images/' . $imagen . '" alt="' . $titulo . '" style="width: auto; height: 100%; object-fit: cover;">';
                         echo '  </div>';
                         echo '  <div class="movie-info">';
                         echo '    <h3 class="movie-title">' . $titulo . '</h3>';
