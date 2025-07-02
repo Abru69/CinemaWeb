@@ -78,30 +78,52 @@ $resultado = $conn->query("SELECT * FROM peliculas");
     <footer>
         <p>&copy; 2025 <span style="color: #FFC857;">CinemaWeb</span>. Todos los derechos reservados.</p>
     </footer>
-    <script>
-        const csrfToken = '<?= $_SESSION['csrf_token'] ?>';
-        document.querySelectorAll('.eliminar-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (!confirm('¿Eliminar esta película?')) return;
-                const id = this.getAttribute('data-id');
-                const formData = new FormData();
-                formData.append('id', id);
-                formData.append('csrf_token', csrfToken);
 
-                fetch('eliminar.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(res => res.text())
-                .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
-                .then(data => {
-                    const status = data.querySelector('status').textContent;
-                    const msg = data.querySelector('message').textContent;
-                    alert(msg);
-                    if (status === 'success') location.reload();
-                });
-            });
-        });
+    <!-- Modal de confirmación -->
+    <div id="modal-confirm" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+      <div style="background: rgb(255, 72, 59); padding:2rem; border-radius:8px; max-width:90vw; text-align:center;">
+        <h2>¿Estás seguro de eliminar esta película?</h2>
+        <div style="margin-top:1.5rem;">
+          <button id="btn-confirmar" class="btn btn-primary">Sí, eliminar</button>
+          <button id="btn-cancelar" class="btn logout-btn">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+const csrfToken = '<?= $_SESSION['csrf_token'] ?>';
+let peliculaAEliminar = null;
+
+document.querySelectorAll('.eliminar-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        peliculaAEliminar = this.getAttribute('data-id');
+        document.getElementById('modal-confirm').style.display = 'flex';
+    });
+});
+
+document.getElementById('btn-cancelar').onclick = function() {
+    document.getElementById('modal-confirm').style.display = 'none';
+    peliculaAEliminar = null;
+};
+
+document.getElementById('btn-confirmar').onclick = function() {
+    if (!peliculaAEliminar) return;
+    const formData = new FormData();
+    formData.append('id', peliculaAEliminar);
+    formData.append('csrf_token', csrfToken);
+
+    fetch('eliminar.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.text())
+    .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+    .then(data => {
+        const status = data.querySelector('status').textContent;
+        if (status === 'success') location.reload();
+        else document.getElementById('modal-confirm').style.display = 'none';
+    });
+};
     </script>
 </body>
 </html>

@@ -23,12 +23,15 @@ if (!$pelicula) {
     exit;
 }
 
-// Obtener todas las salas
-$salas = $conn->query("SELECT id, numero FROM salas");
+// Obtener fecha de la función (si hay funciones, tomar la fecha de la primera)
+$fecha_funcion = isset($funciones[0]['fecha']) ? $funciones[0]['fecha'] : date('Y-m-d');
 
-// Obtener funciones actuales
+// Obtener todas las salas con tipo
+$salas = $conn->query("SELECT id, numero, tipo FROM salas");
+
+// Obtener funciones actuales (ahora también obtenemos fecha)
 $funciones = [];
-$res_funciones = $conn->query("SELECT id, hora FROM funciones WHERE id_pelicula = $id ORDER BY hora ASC");
+$res_funciones = $conn->query("SELECT id, hora, fecha FROM funciones WHERE id_pelicula = $id ORDER BY hora ASC");
 while ($f = $res_funciones->fetch_assoc()) {
     $funciones[] = $f;
 }
@@ -37,11 +40,51 @@ $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP
 
 // Si se envió el formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $titulo = $_POST['titulo'];
-    $genero = $_POST['genero'];
-    $duracion = $_POST['duracion'];
-    $sala_id = $_POST['sala_id'];
+    // Validar CSRF
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        if ($isAjax) {
+            header('Content-Type: application/xml');
+            echo '<response><status>error</status><message>Token CSRF inválido.</message></response>';
+            exit;
+        }
+        exit('Token CSRF inválido.');
+    }
+
+    $titulo = trim($_POST['titulo']);
+    $genero = trim($_POST['genero']);
+    $duracion = trim($_POST['duracion']);
+    $sala_id = intval($_POST['sala_id']);
+    $fecha = trim($_POST['fecha']);
     $horarios = explode(',', $_POST['horarios']);
+
+    // Validaciones básicas
+    $errores = [];
+    if (!$titulo || !$genero || !$duracion || !$sala_id || !$fecha) {
+        $errores[] = "Todos los campos son obligatorios.";
+    }
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha)) {
+        $errores[] = "Fecha inválida.";
+    }
+    $horarios_validos = [];
+    foreach ($horarios as $hora) {
+        $hora = trim($hora);
+        if (preg_match('/^\d{2}:\d{2}$/', $hora)) {
+            $horarios_validos[] = $hora;
+        }
+    }
+    if (empty($horarios_validos)) {
+        $errores[] = "Debes ingresar al menos un horario válido (formato 24h: 15:00).";
+    }
+
+    if (!empty($errores)) {
+        if ($isAjax) {
+            header('Content-Type: application/xml');
+            echo '<response><status>error</status><message>' . htmlspecialchars(implode(' ', $errores)) . '</message></response>';
+            exit;
+        }
+        echo implode('<br>', array_map('htmlspecialchars', $errores));
+        exit;
+    }
 
     // Actualizar película y sala
     $update = $conn->prepare("UPDATE peliculas SET titulo = ?, genero = ?, duracion = ?, sala_id = ? WHERE id = ?");
@@ -52,15 +95,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Eliminar funciones anteriores
         $conn->query("DELETE FROM funciones WHERE id_pelicula = $id");
 
-        // Insertar nuevas funciones
-        foreach ($horarios as $hora) {
-            $hora = trim($hora);
-            if (preg_match('/^\d{2}:\d{2}$/', $hora)) {
-                $stmt_funcion = $conn->prepare("INSERT INTO funciones (id_pelicula, id_sala, hora) VALUES (?, ?, ?)");
-                $stmt_funcion->bind_param("iis", $id, $sala_id, $hora);
-                $stmt_funcion->execute();
-                $stmt_funcion->close();
-            }
+        // Insertar nuevas funciones con fecha
+        foreach ($horarios_validos as $hora) {
+            $stmt_funcion = $conn->prepare("INSERT INTO funciones (id_pelicula, id_sala, fecha, hora) VALUES (?, ?, ?, ?)");
+            $stmt_funcion->bind_param("iiss", $id, $sala_id, $fecha, $hora);
+            $stmt_funcion->execute();
+            $stmt_funcion->close();
         }
 
         if ($isAjax) {
@@ -88,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <h1>Editar Película</h1>
-    <form method="POST" id="form-editar">
+    <form method="POST" id="form-editar" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
         <label>Título:</label>
@@ -105,10 +145,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php 
             while ($sala = $salas->fetch_assoc()): ?>
                 <option value="<?= $sala['id'] ?>" <?= (isset($pelicula['sala_id']) && $sala['id'] == $pelicula['sala_id']) ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($sala['numero']) ?>
+                    Sala <?= htmlspecialchars($sala['numero']) ?> (<?= htmlspecialchars($sala['tipo']) ?>)
                 </option>
             <?php endwhile; ?>
         </select><br>
+
+        <label>Fecha:</label>
+        <input type="date" name="fecha" value="<?= htmlspecialchars($fecha_funcion) ?>" required><br>
 
         <label>Horarios (separados por coma, formato 24h ej: 15:00,18:30):</label>
         <input type="text" name="horarios" value="<?= htmlspecialchars(implode(',', array_column($funciones, 'hora'))) ?>" required><br>
