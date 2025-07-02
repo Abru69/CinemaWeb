@@ -19,7 +19,8 @@ CREATE TABLE peliculas (
   genero VARCHAR(50),
   clasificacion VARCHAR(10),
   duracion VARCHAR(10),
-  imagen VARCHAR(100)
+  imagen VARCHAR(100),
+  id_sala INT NOT NULL
 );
 
 -- Tabla de salas
@@ -75,5 +76,3 @@ DELETE  FROM usuarios
 WHERE nombre = 'Alan';
 
 SET SQL_SAFE_UPDATES = 1;
-
-ALTER TABLE peliculas ADD COLUMN sala_id INT;

@@ -1,4 +1,6 @@
 <?php
+
+
 include('../../../includes/db.php');
 include('../../../includes/session.php');
 verificarRol('admin');
@@ -23,18 +25,18 @@ if (!$pelicula) {
     exit;
 }
 
-// Obtener fecha de la función (si hay funciones, tomar la fecha de la primera)
-$fecha_funcion = isset($funciones[0]['fecha']) ? $funciones[0]['fecha'] : date('Y-m-d');
-
-// Obtener todas las salas con tipo
-$salas = $conn->query("SELECT id, numero, tipo FROM salas");
-
 // Obtener funciones actuales (ahora también obtenemos fecha)
 $funciones = [];
 $res_funciones = $conn->query("SELECT id, hora, fecha FROM funciones WHERE id_pelicula = $id ORDER BY hora ASC");
 while ($f = $res_funciones->fetch_assoc()) {
     $funciones[] = $f;
 }
+
+// Obtener fecha de la función (si hay funciones, tomar la fecha de la primera)
+$fecha_funcion = isset($funciones[0]['fecha']) ? $funciones[0]['fecha'] : date('Y-m-d');
+
+// Obtener todas las salas con tipo
+$salas = $conn->query("SELECT id, numero, tipo FROM salas");
 
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
@@ -44,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         if ($isAjax) {
             header('Content-Type: application/xml');
+            ob_clean();
             echo '<response><status>error</status><message>Token CSRF inválido.</message></response>';
             exit;
         }
@@ -79,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($errores)) {
         if ($isAjax) {
             header('Content-Type: application/xml');
+            ob_clean();
             echo '<response><status>error</status><message>' . htmlspecialchars(implode(' ', $errores)) . '</message></response>';
             exit;
         }
@@ -104,6 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($isAjax) {
+            ob_clean();
             echo '<response><status>success</status><message>Película actualizada correctamente.</message></response>';
             exit;
         }
@@ -111,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     } else {
         if ($isAjax) {
+            ob_clean();
             echo '<response><status>error</status><message>Error al actualizar.</message></response>';
             exit;
         }
@@ -143,6 +149,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label>Sala:</label>
         <select name="sala_id" required>
             <?php 
+            // Reinicia el puntero del resultado de salas si es necesario
+            $salas->data_seek(0);
             while ($sala = $salas->fetch_assoc()): ?>
                 <option value="<?= $sala['id'] ?>" <?= (isset($pelicula['sala_id']) && $sala['id'] == $pelicula['sala_id']) ? 'selected' : '' ?>>
                     Sala <?= htmlspecialchars($sala['numero']) ?> (<?= htmlspecialchars($sala['tipo']) ?>)
@@ -172,10 +180,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             headers: {'X-Requested-With': 'XMLHttpRequest'}
         })
         .then(res => res.text())
-        .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
-        .then(data => {
-            const status = data.querySelector('status').textContent;
-            const msg = data.querySelector('message').textContent;
+        .then(str => {
+            console.log('Respuesta del servidor:', str); // <-- Agrega esto
+            let data, status, msg;
+            try {
+                data = (new window.DOMParser()).parseFromString(str, "text/xml");
+                status = data.querySelector('status')?.textContent;
+                msg = data.querySelector('message')?.textContent;
+                if (!status || !msg) throw new Error();
+            } catch {
+                alert('Ocurrió un error inesperado. Intenta nuevamente.');
+                return;
+            }
             alert(msg);
             if (status === 'success') window.location.href = 'index.php';
         });
