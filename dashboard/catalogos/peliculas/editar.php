@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <select name="sala_id" required>
             <?php 
             while ($sala = $salas->fetch_assoc()): ?>
-                <option value="<?= $sala['id'] ?>" <?= $sala['id'] == $pelicula['sala_id'] ? 'selected' : '' ?>>
+                <option value="<?= $sala['id'] ?>" <?= (isset($pelicula['sala_id']) && $sala['id'] == $pelicula['sala_id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($sala['numero']) ?>
                 </option>
             <?php endwhile; ?>
