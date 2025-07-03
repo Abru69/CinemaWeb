@@ -58,8 +58,8 @@ $resultado = $conn->query("SELECT * FROM salas");
                         <td><?= $sala['tipo'] ?></td>
                         <td><?= $sala['capacidad'] ?></td>
                         <td>
-                            <a href="editar.php?id=<?= $sala['id'] ?>" class="btn btn-primary">✏️</a>
-                            <a href="eliminar.php?id=<?= $sala['id'] ?>" class="btn logout-btn" onclick="return confirm('¿Eliminar esta sala?')">🗑️</a>
+                            <a href="editar.php?id=<?= $sala['id'] ?>" class="btn btn-primary">Editar</a>
+                            <a href="eliminar.php?id=<?= $sala['id'] ?>" class="btn logout-btn" onclick="return confirm('¿Eliminar esta sala?')">Eliminar</a>
                         </td>
                     </tr>
                 <?php endwhile; ?>

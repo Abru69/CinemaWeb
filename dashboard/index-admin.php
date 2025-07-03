@@ -59,9 +59,9 @@ $admin_nombre = $_SESSION['nombre'];
         </div>
         
     </div>
-    <div class="footer">
+    <footer class="footer">
         &copy; 2024 CinemaWeb | Panel Admin
-    </div>
+    </footer>
 </body>
 
 </html>

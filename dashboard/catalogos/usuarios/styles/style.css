@@ -67,6 +67,12 @@ nav {
   align-items: center;
   justify-content: center;
   font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
 }
 
 .admin-badge {
@@ -76,6 +82,34 @@ nav {
   border-radius: 15px;
   font-size: 0.8rem;
   font-weight: bold;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: var(--azul-oscuro);
+  min-width: 200px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 8px;
+  border: 1px solid var(--azul);
+}
+
+.dropdown-content a {
+  color: var(--blanco);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: var(--azul);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
 }
 
 /* Main */
@@ -95,9 +129,9 @@ main {
 }
 
 .welcome-section h1 {
+  color: var(--amarillo);
   font-size: 2.5rem;
   margin-bottom: 1rem;
-  color: var(--amarillo);
 }
 
 .welcome-section p {
@@ -108,15 +142,15 @@ main {
 
 /* Botones */
 .btn {
-  padding: 0.8rem 1.5rem;
+  padding: 12px 20px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 5px;
   text-decoration: none;
   display: inline-block;
-  font-size: 1rem;
-  font-weight: 500;
-  margin: 0.2rem;
 }
 
 .btn-primary {
@@ -129,16 +163,15 @@ main {
 }
 
 .logout-btn {
-  background-color: var(--azul);
+  background-color: var(--rojo);
   color: var(--blanco);
-  border: 2px solid var(--azul-claro);
 }
 
 .logout-btn:hover {
-  background-color: var(--azul-claro);
+  background-color: #e55555;
 }
 
-/* Sección de estadísticas */
+/* Sección de estadísticas/tabla */
 .stats-section {
   background-color: var(--azul-oscuro);
   border-radius: 15px;
@@ -149,31 +182,31 @@ main {
 /* Tabla */
 table {
   width: 100%;
-  color: var(--blanco);
+  background-color: var(--azul-oscuro);
+  border-radius: 10px;
+  overflow: hidden;
   border-collapse: collapse;
-  margin-top: 1rem;
 }
 
-/* Encabezados */
+/* Encabezado */
 thead {
   background-color: var(--azul);
 }
 
 thead th {
-  padding: 1rem;
-  font-weight: bold;
+  padding: 15px;
   color: var(--amarillo);
-  border-bottom: 2px solid var(--verde);
-  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: left;
 }
 
 /* Filas */
 tbody tr {
-  background-color: var(--azul);
+  border-bottom: 1px solid var(--azul);
 }
 
 tbody tr:nth-child(even) {
-  background-color: #2a4155;
+  background-color: #243447;
 }
 
 tbody tr:hover {
@@ -182,79 +215,58 @@ tbody tr:hover {
 
 /* Celdas */
 tbody td {
-  padding: 1rem;
-  border-bottom: 1px solid var(--azul-oscuro);
+  padding: 15px;
   color: var(--gris);
-  font-size: 1rem;
 }
 
 /* Primera columna (ID) */
 tbody td:first-child {
-  font-weight: bold;
   color: var(--amarillo);
-  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: center;
 }
 
-/* Columna de acciones */
+/* Segunda columna (Nombre) */
+tbody td:nth-child(2) {
+  color: var(--verde);
+  font-weight: bold;
+}
+
+/* Tercera columna (Email) */
+tbody td:nth-child(3) {
+  color: var(--azul-claro);
+}
+
+/* Cuarta columna (Rol) */
+tbody td:nth-child(4) {
+  color: var(--amarillo);
+  font-weight: bold;
+}
+
+/* Última columna (Acciones) */
 tbody td:last-child {
   text-align: center;
 }
 
 /* Botones en tabla */
 tbody .btn {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  margin: 0.1rem;
-}
-
-tbody .logout-btn {
-  background-color: var(--rojo);
-  border: 2px solid #e55555;
-}
-
-tbody .logout-btn:hover {
-  background-color: #e55555;
-}
-
-/* Footer */
-footer {
-  background-color: var(--azul-oscuro);
-  text-align: center;
-  padding: 2rem;
-  margin-top: 3rem;
-  color: var(--gris);
-}
-
-/* Estados */
-.estado-activo {
-  color: var(--verde);
-  font-weight: bold;
-}
-
-.estado-inactivo {
-  color: var(--rojo);
-  font-weight: bold;
-}
-
-.estado-mantenimiento {
-  color: var(--amarillo);
-  font-weight: bold;
+  padding: 8px 15px;
+  font-size: 14px;
 }
 
 /* Sin datos */
 .no-datos {
   text-align: center;
-  padding: 3rem;
+  padding: 50px;
   color: #888;
   font-style: italic;
+  background-color: var(--azul-oscuro);
+  border-radius: 10px;
+  margin: 20px 0;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .welcome-section h1 {
-    font-size: 2rem;
-  }
-
   .user-info {
     flex-direction: column;
     gap: 0.3rem;
@@ -269,6 +281,10 @@ footer {
     padding: 2rem 1rem;
   }
 
+  .welcome-section h1 {
+    font-size: 2rem;
+  }
+
   .stats-section {
     padding: 1rem;
     overflow-x: auto;
@@ -276,28 +292,36 @@ footer {
 
   table {
     min-width: 600px;
+    font-size: 14px;
   }
 
   thead th,
   tbody td {
-    padding: 0.8rem 0.5rem;
-    font-size: 0.9rem;
+    padding: 10px 8px;
   }
 
   .btn {
-    padding: 0.6rem 1rem;
-    font-size: 0.8rem;
+    padding: 10px 15px;
+    font-size: 14px;
   }
 
   tbody .btn {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
+    padding: 6px 12px;
+    font-size: 12px;
   }
 }
 
 @media (max-width: 480px) {
+  main {
+    padding: 0.5rem;
+  }
+
   .welcome-section {
     padding: 1.5rem 0.5rem;
+  }
+
+  .welcome-section h1 {
+    font-size: 1.5rem;
   }
 
   .stats-section {
@@ -306,16 +330,21 @@ footer {
 
   table {
     min-width: 500px;
+    font-size: 12px;
   }
 
   thead th,
   tbody td {
-    padding: 0.6rem 0.3rem;
-    font-size: 0.8rem;
+    padding: 8px 5px;
+  }
+
+  .btn {
+    padding: 8px 12px;
+    font-size: 12px;
   }
 
   tbody .btn {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.7rem;
+    padding: 5px 8px;
+    font-size: 10px;
   }
 }
