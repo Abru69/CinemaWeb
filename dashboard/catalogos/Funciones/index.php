@@ -19,7 +19,7 @@ ORDER BY funciones.fecha DESC, funciones.hora ASC");
 </head>
 <body>
     <h1>Gestión de Funciones</h1>
-    <a href="crear.php" class="btn btn-primary">➕ Nueva Función</a>
+    <a href="crear.php" class="btn btn-primary">+ Nueva Función</a>
     <a href="../../index-admin.php" class="btn logout-btn" style="margin-left:10px;">← Volver al Panel</a>
     <table>
         <thead>

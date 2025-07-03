@@ -25,9 +25,7 @@ $inicial = strtoupper(substr($nombre, 0, 1));
             <div class="logo">Cinema<span class="gold-accent">Web</span></div>
             <div class="nav-links">
                 <a href="#cartelera">Cartelera</a>
-                <a href="#mis-reservas">Mis Reservas</a>
-                <a href="#favoritos">Favoritos</a>
-                <a href="#promociones">Promociones</a>
+                <a href="catalogos_usuario/reservas/reservas.html">Reservar</a>
             </div>
             <div class="user-menu">
                 <div class="user-info">
@@ -101,7 +99,7 @@ $inicial = strtoupper(substr($nombre, 0, 1));
     </main>
 
     <footer>
-        <p>&copy; 2024 <span class="gold-accent">CineMax</span>. Todos los derechos reservados.</p>
+        <p>&copy; 2024 <span class="gold-accent">CinemaWeb</span>. Todos los derechos reservados.</p>
         <p>Dirección: Av. Principal 123, Ciudad • Teléfono: (555) 123-4567</p>
     </footer>
 </body>

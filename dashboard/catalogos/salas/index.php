@@ -36,7 +36,7 @@ $resultado = $conn->query("SELECT * FROM salas");
     <div class="welcome-section">
         <h1>Gestión de <span class="gold-accent">Salas</span></h1>
         <p>Visualiza y administra las salas del cine</p>
-        <a href="crear.php" class="btn btn-primary">➕ Nueva Sala</a>
+        <a href="crear.php" class="btn btn-primary"> Nueva Sala</a>
     </div>
 
     <div class="stats-section">
