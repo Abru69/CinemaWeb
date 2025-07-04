@@ -35,8 +35,6 @@ $inicial = strtoupper(substr($nombre, 0, 1));
                     <div class="user-avatar"><?= $inicial ?></div>
                     <div class="dropdown-content">
                         <a href="catalogos_usuario/perfil/perfil.php">Mi Perfil</a>
-                        <a href="#historial">Historial</a>
-                        <a href="#configuracion">Configuración</a>
                         <a href="logout.php">Cerrar Sesión</a>
                     </div>
                 </div>

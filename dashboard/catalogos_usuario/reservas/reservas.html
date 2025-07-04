@@ -2,44 +2,23 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Reservar Función | CinemaWeb</title>
+    <title>Mis Reservas | CinemaWeb</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
-
-<header>
-    <nav>
-        <div class="logo">Cinema<span class="gold-accent">Web</span></div>
-        <div class="nav-links">
-            <a href="../../index-cliente.php">Inicio</a>
-            <a href="../../logout.php">Cerrar Sesión</a>
-        </div>
-    </nav>
-</header>
-
-<main>
-    <div class="reserva-container">
-        <h2>Reserva tu Función</h2>
-        <form id="formReserva">
-            <div class="form-group">
-                <label for="funcion">Función:</label>
-                <select id="funcion" name="funcion" required>
-                    <option value="">Selecciona una función...</option>
-                    <option value="1">Matrix - Sala 1 - 18:00</option>
-                    <option value="2">Matrix - Sala 2 - 20:30</option>
-                </select>
+    <header>
+        <nav>
+            <div class="logo">Cinema<span class="gold-accent">Web</span></div>
+            <div class="nav-links">
+                <a href="../../index-cliente.php">Inicio</a>
+                <a href="../../logout.php">Cerrar Sesión</a>
             </div>
+        </nav>
+    </header>
 
-            <div class="form-group">
-                <label for="boletos">Número de boletos:</label>
-                <input type="number" id="boletos" name="boletos" min="1" max="10" required>
-            </div>
-
-            <button type="submit" class="btn-reservar">Confirmar Reserva</button>
-        </form>
-        <!-- Tabla de reservas del usuario -->
+    <main>
         <div class="mis-reservas">
-            <h3>Mis Reservas</h3>
+            <h2>Mis Reservas</h2>
             <table id="tablaReservas">
                 <thead>
                     <tr>
@@ -54,30 +33,34 @@
                 </tbody>
             </table>
         </div>
-    </div>
-</main>
+    </main>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Simulación de datos, reemplaza esto con una petición AJAX a tu backend
-    const reservas = [
-        { pelicula: "Matrix", sala: "1", horario: "18:00", boletos: 2 },
-        { pelicula: "Matrix", sala: "2", horario: "20:30", boletos: 1 }
-    ];
-
-    const tbody = document.querySelector('#tablaReservas tbody');
-    reservas.forEach(r => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${r.pelicula}</td>
-            <td>${r.sala}</td>
-            <td>${r.horario}</td>
-            <td>${r.boletos}</td>
-        `;
-        tbody.appendChild(tr);
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('get_reservas_usuario.php')
+            .then(response => response.json())
+            .then(reservas => {
+                const tbody = document.querySelector('#tablaReservas tbody');
+                tbody.innerHTML = '';
+                if (reservas.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4">No tienes reservas.</td></tr>';
+                } else {
+                    reservas.forEach(r => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${r.pelicula}</td>
+                            <td>${r.sala}</td>
+                            <td>${r.horario}</td>
+                            <td>${r.boletos}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar reservas:', error);
+            });
     });
-});
-</script>
-
+    </script>
 </body>
 </html>

@@ -35,36 +35,8 @@ $reservados = [3, 5, 8]; // reemplazar con consulta real más adelante
 <head>
     <meta charset="UTF-8">
     <title><?= htmlspecialchars($pelicula['titulo']) ?> - Detalles</title>
-    <link rel="stylesheet" href="../styles/cliente_styles.css">
-    <style>
-        .asientos {
-            display: grid;
-            grid-template-columns: repeat(10, 40px);
-            gap: 8px;
-            justify-content: center;
-            margin-top: 1rem;
-        }
-        .asiento {
-            width: 40px;
-            height: 40px;
-            background-color: #39b050;
-            border-radius: 5px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        .asiento.reservado {
-            background-color: #ff6b6b;
-            cursor: not-allowed;
-        }
-        .asiento.seleccionado {
-            background-color: #ffc857;
-        }
-    </style>
+    <link rel="stylesheet" href="styles/styles.css">
+    
 </head>
 <body>
 
