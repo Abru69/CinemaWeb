@@ -37,8 +37,47 @@
 
             <button type="submit" class="btn-reservar">Confirmar Reserva</button>
         </form>
+        <!-- Tabla de reservas del usuario -->
+        <div class="mis-reservas">
+            <h3>Mis Reservas</h3>
+            <table id="tablaReservas">
+                <thead>
+                    <tr>
+                        <th>Película</th>
+                        <th>Sala</th>
+                        <th>Horario</th>
+                        <th>Boletos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se llenarán las reservas con JS -->
+                </tbody>
+            </table>
+        </div>
     </div>
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Simulación de datos, reemplaza esto con una petición AJAX a tu backend
+    const reservas = [
+        { pelicula: "Matrix", sala: "1", horario: "18:00", boletos: 2 },
+        { pelicula: "Matrix", sala: "2", horario: "20:30", boletos: 1 }
+    ];
+
+    const tbody = document.querySelector('#tablaReservas tbody');
+    reservas.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${r.pelicula}</td>
+            <td>${r.sala}</td>
+            <td>${r.horario}</td>
+            <td>${r.boletos}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+});
+</script>
 
 </body>
 </html>

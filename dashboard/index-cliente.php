@@ -34,7 +34,7 @@ $inicial = strtoupper(substr($nombre, 0, 1));
                 <div class="dropdown">
                     <div class="user-avatar"><?= $inicial ?></div>
                     <div class="dropdown-content">
-                        <a href="#perfil">Mi Perfil</a>
+                        <a href="catalogos_usuario/perfil/perfil.php">Mi Perfil</a>
                         <a href="#historial">Historial</a>
                         <a href="#configuracion">Configuración</a>
                         <a href="logout.php">Cerrar Sesión</a>
@@ -85,6 +85,7 @@ $inicial = strtoupper(substr($nombre, 0, 1));
                         }
 
                         echo '    </div>';
+                        echo '<a href="catalogos_usuario/detalles_peliculas/detalles_pelicula.php?id=' . $peli['id'] . '" class="btn btn-primary" style="margin-top: 1rem;">Ver detalles</a>';
                         echo '  </div>';
                         echo '</div>';
                     }
