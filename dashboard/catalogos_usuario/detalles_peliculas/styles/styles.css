@@ -226,7 +226,7 @@ footer {
 }
 
 .disponible {
-  background-color: #39b050;
+  background-color: #fff;
 }
 
 .ocupado {
@@ -234,7 +234,20 @@ footer {
 }
 
 .seleccionado-leyenda {
-  background-color: #ffc857;
+  background-color: #39b050;
+  border: 2px solid #2d8a3e;
+}
+.funciones-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    flex-direction: column;
+}
+.funcion-card {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.seat-row {
+    margin-bottom: 4px;
 }
 
 /* Responsive */
@@ -329,4 +342,44 @@ footer {
 ::selection {
   background-color: #ffc857;
   color: #1a2b3c;
+}
+
+.seat-btn {
+    display: inline-block;
+    width: 44px;
+    height: 44px;
+    margin: 8px 10px 8px 0;
+    border-radius: 8px;
+    border: 2px solid #FFC857;
+    background: #fff;
+    color: #222;
+    font-weight: bold;
+    text-align: center;
+    line-height: 42px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
+    user-select: none;
+}
+.seat-btn:hover:not(.disabled) {
+    background: #ffe7b3;
+    border-color: #ffb300;
+}
+.seat-btn.selected {
+    background: #39b050 !important;   /* Verde */
+    color: #fff !important;
+    border-color: #2d8a3e !important; /* Verde oscuro */
+    box-shadow: 0 0 0 3px #b2f2e5;
+}
+.seat-btn.disabled {
+    background: #e63946 !important;
+    color: #fff !important;
+    border-color: #b71c1c;
+    cursor: not-allowed;
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+.seat-row {
+    margin-bottom: 12px;
 }

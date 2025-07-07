@@ -1,6 +1,4 @@
 <?php
-
-
 include('../../../includes/db.php');
 include('../../../includes/session.php');
 verificarRol('admin');
@@ -25,19 +23,6 @@ if (!$pelicula) {
     exit;
 }
 
-// Obtener funciones actuales (ahora también obtenemos fecha)
-$funciones = [];
-$res_funciones = $conn->query("SELECT id, hora, fecha FROM funciones WHERE id_pelicula = $id ORDER BY hora ASC");
-while ($f = $res_funciones->fetch_assoc()) {
-    $funciones[] = $f;
-}
-
-// Obtener fecha de la función (si hay funciones, tomar la fecha de la primera)
-$fecha_funcion = isset($funciones[0]['fecha']) ? $funciones[0]['fecha'] : date('Y-m-d');
-
-// Obtener todas las salas con tipo
-$salas = $conn->query("SELECT id, numero, tipo FROM salas");
-
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
 // Si se envió el formulario
@@ -55,28 +40,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $titulo = trim($_POST['titulo']);
     $genero = trim($_POST['genero']);
-    $duracion = trim($_POST['duracion']);
-    $sala_id = intval($_POST['sala_id']);
-    $fecha = trim($_POST['fecha']);
-    $horarios = explode(',', $_POST['horarios']);
+    $sinopsis = trim($_POST['sinopsis']);
+    $clasificacion = trim($_POST['clasificacion']);
+    $duracion_min = intval($_POST['duracion_min']);
 
     // Validaciones básicas
     $errores = [];
-    if (!$titulo || !$genero || !$duracion || !$sala_id || !$fecha) {
+    if (!$titulo || !$genero || !$sinopsis || !$clasificacion || !$duracion_min) {
         $errores[] = "Todos los campos son obligatorios.";
     }
-    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha)) {
-        $errores[] = "Fecha inválida.";
-    }
-    $horarios_validos = [];
-    foreach ($horarios as $hora) {
-        $hora = trim($hora);
-        if (preg_match('/^\d{2}:\d{2}$/', $hora)) {
-            $horarios_validos[] = $hora;
+
+    // Procesar imagen si se sube una nueva
+    $imagenNombre = $pelicula['imagen_url'];
+    if (!empty($_FILES['imagen']['name'])) {
+        $imagenNombre = basename($_FILES['imagen']['name']);
+        $imagenTemp = $_FILES['imagen']['tmp_name'];
+        $destino = "../../../images/" . $imagenNombre;
+        $ext = strtolower(pathinfo($imagenNombre, PATHINFO_EXTENSION));
+        $permitidas = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if (!in_array($ext, $permitidas)) {
+            $errores[] = "Formato de imagen no permitido.";
+        } else {
+            if (!move_uploaded_file($imagenTemp, $destino)) {
+                $errores[] = "Error al subir la imagen.";
+            }
         }
-    }
-    if (empty($horarios_validos)) {
-        $errores[] = "Debes ingresar al menos un horario válido (formato 24h: 15:00).";
     }
 
     if (!empty($errores)) {
@@ -90,23 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Actualizar película y sala
-    $update = $conn->prepare("UPDATE peliculas SET titulo = ?, genero = ?, duracion = ?, sala_id = ? WHERE id = ?");
-    $update->bind_param("sssii", $titulo, $genero, $duracion, $sala_id, $id);
+    // Actualizar película
+    $update = $conn->prepare("UPDATE peliculas SET titulo = ?, genero = ?, sinopsis = ?, clasificacion = ?, duracion_min = ?, imagen_url = ? WHERE id = ?");
+    $update->bind_param("ssssisi", $titulo, $genero, $sinopsis, $clasificacion, $duracion_min, $imagenNombre, $id);
 
     if ($isAjax) header('Content-Type: application/xml');
     if ($update->execute()) {
-        // Eliminar funciones anteriores
-        $conn->query("DELETE FROM funciones WHERE id_pelicula = $id");
-
-        // Insertar nuevas funciones con fecha
-        foreach ($horarios_validos as $hora) {
-            $stmt_funcion = $conn->prepare("INSERT INTO funciones (id_pelicula, id_sala, fecha, hora) VALUES (?, ?, ?, ?)");
-            $stmt_funcion->bind_param("iiss", $id, $sala_id, $fecha, $hora);
-            $stmt_funcion->execute();
-            $stmt_funcion->close();
-        }
-
         if ($isAjax) {
             ob_clean();
             echo '<response><status>success</status><message>Película actualizada correctamente.</message></response>';
@@ -133,69 +110,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="styles/styles_editar.css">
 </head>
 <body>
-    <h1>Editar Película</h1>
-    <form method="POST" id="form-editar" enctype="multipart/form-data">
-        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+<main>
+    <div class="stats-section">
+        <h1>Editar Película</h1>
+        <form method="POST" id="form-editar" enctype="multipart/form-data" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
-        <label>Título:</label>
-        <input type="text" name="titulo" value="<?= htmlspecialchars($pelicula['titulo']) ?>" required><br>
+            <div class="form-group">
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" name="titulo" value="<?= htmlspecialchars($pelicula['titulo']) ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="genero">Género:</label>
+                <input type="text" id="genero" name="genero" value="<?= htmlspecialchars($pelicula['genero']) ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="sinopsis">Sinopsis:</label>
+                <textarea id="sinopsis" name="sinopsis" rows="4" required><?= htmlspecialchars($pelicula['sinopsis']) ?></textarea>
+            </div>
+            <div class="form-group">
+                <label for="clasificacion">Clasificación:</label>
+                <input type="text" id="clasificacion" name="clasificacion" value="<?= htmlspecialchars($pelicula['clasificacion']) ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="duracion_min">Duración (minutos):</label>
+                <input type="number" id="duracion_min" name="duracion_min" value="<?= htmlspecialchars($pelicula['duracion_min']) ?>" min="1" required>
+            </div>
+            <div class="form-group">
+                <label for="imagen">Imagen (poster):</label>
+                <input type="file" id="imagen" name="imagen" accept="image/*">
+                <small>Si no seleccionas una imagen, se mantendrá la actual.</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            <a href="index.php" class="btn logout-btn">Cancelar</a>
+        </form>
+    </div>
+</main>
 
-        <label>Género:</label>
-        <input type="text" name="genero" value="<?= htmlspecialchars($pelicula['genero']) ?>" required><br>
+<script>
+document.getElementById('form-editar').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
 
-        <label>Duración:</label>
-        <input type="text" name="duracion" value="<?= htmlspecialchars($pelicula['duracion']) ?>" required><br>
-
-        <label>Sala:</label>
-        <select name="sala_id" required>
-            <?php 
-            // Reinicia el puntero del resultado de salas si es necesario
-            $salas->data_seek(0);
-            while ($sala = $salas->fetch_assoc()): ?>
-                <option value="<?= $sala['id'] ?>" <?= (isset($pelicula['sala_id']) && $sala['id'] == $pelicula['sala_id']) ? 'selected' : '' ?>>
-                    Sala <?= htmlspecialchars($sala['numero']) ?> (<?= htmlspecialchars($sala['tipo']) ?>)
-                </option>
-            <?php endwhile; ?>
-        </select><br>
-
-        <label>Fecha:</label>
-        <input type="date" name="fecha" value="<?= htmlspecialchars($fecha_funcion) ?>" required><br>
-
-        <label>Horarios (separados por coma, formato 24h ej: 15:00,18:30):</label>
-        <input type="text" name="horarios" value="<?= htmlspecialchars(implode(',', array_column($funciones, 'hora'))) ?>" required><br>
-
-        <button type="submit" class="btn btn-primary">Guardar cambios</button>
-        <a href="index.php" class="btn logout-btn">Cancelar</a>
-    </form>
-
-    <script>
-    document.getElementById('form-editar').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const form = e.target;
-        const formData = new FormData(form);
-
-        fetch('', {
-            method: 'POST',
-            body: formData,
-            headers: {'X-Requested-With': 'XMLHttpRequest'}
-        })
-        .then(res => res.text())
-        .then(str => {
-            console.log('Respuesta del servidor:', str); // <-- Agrega esto
-            let data, status, msg;
-            try {
-                data = (new window.DOMParser()).parseFromString(str, "text/xml");
-                status = data.querySelector('status')?.textContent;
-                msg = data.querySelector('message')?.textContent;
-                if (!status || !msg) throw new Error();
-            } catch {
-                alert('Ocurrió un error inesperado. Intenta nuevamente.');
-                return;
-            }
-            alert(msg);
-            if (status === 'success') window.location.href = 'index.php';
-        });
+    fetch('', {
+        method: 'POST',
+        body: formData,
+        headers: {'X-Requested-With': 'XMLHttpRequest'}
+    })
+    .then(res => res.text())
+    .then(str => {
+        let data, status, msg;
+        try {
+            data = (new window.DOMParser()).parseFromString(str, "text/xml");
+            status = data.querySelector('status')?.textContent;
+            msg = data.querySelector('message')?.textContent;
+            if (!status || !msg) throw new Error();
+        } catch {
+            alert('Ocurrió un error inesperado. Intenta nuevamente.');
+            return;
+        }
+        alert(msg);
+        if (status === 'success') window.location.href = 'index.php';
     });
-    </script>
+});
+</script>
 </body>
 </html>

@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'] ?? '';
 
-    $stmt = $conn->prepare("SELECT id, nombre, password, rol FROM usuarios WHERE email = ?");
+    $stmt = $conn->prepare("SELECT id, nombre, correo, contraseña, rol FROM usuarios WHERE correo = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $resultado = $stmt->get_result();
@@ -31,14 +31,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
     if ($resultado && $resultado->num_rows === 1) {
         $usuario = $resultado->fetch_assoc();
 
-        if (password_verify($password, $usuario['password'])) {
+        if (password_verify($password, $usuario['contraseña'])) {
             $_SESSION['id'] = $usuario['id'];
             $_SESSION['nombre'] = $usuario['nombre'];
+            $_SESSION['correo'] = $usuario['correo']; 
             $_SESSION['rol'] = $usuario['rol'];
 
             $redirect = match ($usuario['rol']) {
                 'admin' => 'dashboard/index-admin.php',
-                'editor' => 'dashboard/index-editor.php',
+                'empleado' => 'dashboard/index-editor.php',
                 default => 'dashboard/index-cliente.php',
             };
 

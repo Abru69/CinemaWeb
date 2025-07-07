@@ -3,11 +3,13 @@ include('../../../includes/db.php');
 include('../../../includes/session.php');
 verificarRol('admin');
 
-$resultado = $conn->query("SELECT funciones.id, peliculas.titulo, salas.numero AS sala, funciones.fecha, funciones.hora
-FROM funciones
-JOIN peliculas ON funciones.id_pelicula = peliculas.id
-JOIN salas ON funciones.id_sala = salas.id
-ORDER BY funciones.fecha DESC, funciones.hora ASC");
+$resultado = $conn->query("
+    SELECT funciones.id, peliculas.titulo, funciones.sala, funciones.fecha, funciones.hora
+    FROM funciones
+    JOIN peliculas ON funciones.pelicula_id = peliculas.id
+    WHERE NOT (funciones.pelicula_id = 4 AND funciones.fecha = '0000-00-00' AND funciones.hora = '00:00:00')
+    ORDER BY funciones.fecha DESC, funciones.hora ASC
+");
 ?>
 
 <!DOCTYPE html>

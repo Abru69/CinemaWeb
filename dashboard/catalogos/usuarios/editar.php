@@ -14,11 +14,11 @@ $mensaje = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = $_POST['nombre'];
-    $email = $_POST['email'];
+    $correo = $_POST['correo'];
     $rol = $_POST['rol'];
 
-    $stmt = $conn->prepare("UPDATE usuarios SET nombre = ?, email = ?, rol = ? WHERE id = ?");
-    $stmt->bind_param("sssi", $nombre, $email, $rol, $id);
+    $stmt = $conn->prepare("UPDATE usuarios SET nombre = ?, correo = ?, rol = ? WHERE id = ?");
+    $stmt->bind_param("sssi", $nombre, $correo, $rol, $id);
 
     if ($stmt->execute()) {
         $mensaje = "Usuario actualizado.";
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="form-group">
                 <label>Email:</label>
-                <input type="text" name="email" value="<?= htmlspecialchars($usuario['email']) ?>" required>
+                <input type="text" name="correo" value="<?= htmlspecialchars($usuario['correo']) ?>" required>
             </div>
             <div class="form-group">
                 <label>Rol:</label>

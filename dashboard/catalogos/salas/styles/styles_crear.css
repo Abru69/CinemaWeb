@@ -169,6 +169,7 @@ label {
 
 /* Inputs */
 input[type="text"],
+input[type="number"],
 input[type="file"],
 textarea {
   width: 100%;
@@ -182,6 +183,7 @@ textarea {
 }
 
 input[type="text"]:focus,
+input[type="number"]:focus,
 input[type="file"]:focus,
 textarea:focus {
   outline: none;
@@ -295,6 +297,7 @@ footer {
   }
 
   input[type="text"],
+  input[type="number"],
   input[type="file"],
   textarea {
     padding: 0.6rem;
@@ -306,3 +309,4 @@ footer {
   opacity: 0.6;
   cursor: not-allowed;
 }
+

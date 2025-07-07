@@ -3,7 +3,7 @@ include('../../../includes/db.php');
 include('../../../includes/session.php');
 verificarRol('admin');
 
-$resultado = $conn->query("SELECT * FROM usuarios");
+$resultado = $conn->query("SELECT * FROM usuarios ORDER BY rol DESC, fecha_registro DESC");
 ?>
 
 <!DOCTYPE html>
@@ -56,11 +56,13 @@ $resultado = $conn->query("SELECT * FROM usuarios");
                 <tr>
                     <td><?= $u['id'] ?></td>
                     <td><?= htmlspecialchars($u['nombre']) ?></td>
-                    <td><?= htmlspecialchars($u['email']) ?></td>
+                    <td><?= htmlspecialchars($u['correo']) ?></td>
                     <td><?= $u['rol'] ?></td>
                     <td>
                         <a class="btn btn-primary" href="editar.php?id=<?= $u['id'] ?>">Editar</a>
-                        <a class="btn logout-btn" href="eliminar.php?id=<?= $u['id'] ?>" onclick="return confirm('¿Eliminar usuario?')">Eliminar</a>
+                        <?php if ($u['id'] != 1): ?>
+                            <a class="btn logout-btn" href="eliminar.php?id=<?= $u['id'] ?>" onclick="return confirm('¿Eliminar usuario?')">Eliminar</a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endwhile; ?>

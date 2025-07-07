@@ -4,19 +4,30 @@ include('../../../includes/session.php');
 verificarRol('admin');
 
 $mensaje = "";
+$errores = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $numero = $_POST['numero'];
-    $tipo = $_POST['tipo'];
-    $capacidad = $_POST['capacidad'];
+    $sala = trim($_POST['sala']);
+    $capacidad = intval($_POST['capacidad']);
 
-    $stmt = $conn->prepare("INSERT INTO salas (numero, tipo, capacidad) VALUES (?, ?, ?)");
-    $stmt->bind_param("isi", $numero, $tipo, $capacidad);
+    // Usar el ID de la película dummy "Sin asignar"
+    $pelicula_id = 4;
+    $fecha = '0000-00-00';
+    $hora = '00:00:00';
 
-    if ($stmt->execute()) {
-        $mensaje = "Sala creada correctamente.";
-    } else {
-        $mensaje = "Error al crear la sala: " . $stmt->error;
+    if (!$sala || !$capacidad) {
+        $errores[] = "Todos los campos son obligatorios.";
+    }
+
+    if (empty($errores)) {
+        $stmt = $conn->prepare("INSERT INTO funciones (pelicula_id, fecha, hora, sala, total_asientos) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("isssi", $pelicula_id, $fecha, $hora, $sala, $capacidad);
+
+        if ($stmt->execute()) {
+            $mensaje = "Sala creada correctamente. Ahora puedes asignarle película y horario.";
+        } else {
+            $errores[] = "Error al crear la sala: " . $stmt->error;
+        }
     }
 }
 ?>
@@ -50,19 +61,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if ($mensaje): ?>
             <div class="mensaje mensaje-exito"><?= $mensaje ?></div>
         <?php endif; ?>
+        <?php if (!empty($errores)): ?>
+            <div class="mensaje mensaje-error"><?= implode('<br>', array_map('htmlspecialchars', $errores)) ?></div>
+        <?php endif; ?>
 
         <form method="POST">
             <div class="form-group">
-                <label for="numero">Número de sala:</label>
-                <input type="text" id="numero" name="numero" required>
-            </div>
-            <div class="form-group">
-                <label for="tipo">Tipo:</label>
-                <input type="text" id="tipo" name="tipo" placeholder="Ej: 2D, 3D, IMAX" required>
+                <label for="sala">Nombre de sala:</label>
+                <input type="text" id="sala" name="sala" required>
             </div>
             <div class="form-group">
                 <label for="capacidad">Capacidad:</label>
-                <input type="text" id="capacidad" name="capacidad" required>
+                <input type="number" id="capacidad" name="capacidad" min="1" required>
             </div>
             <button type="submit" class="btn btn-primary">Guardar Sala</button>
         </form>

@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['id']) || !isset($_PO
 $id = intval($_POST['id']);
 
 // Elimina funciones relacionadas primero
-$stmtFunciones = $conn->prepare("DELETE FROM funciones WHERE id_pelicula = ?");
+$stmtFunciones = $conn->prepare("DELETE FROM funciones WHERE pelicula_id = ?");
 $stmtFunciones->bind_param("i", $id);
 $stmtFunciones->execute();
 $stmtFunciones->close();

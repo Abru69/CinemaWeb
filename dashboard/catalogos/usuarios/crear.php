@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rol = $_POST['rol'];
     $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
 
-    $stmt = $conn->prepare("INSERT INTO usuarios (id, nombre, email, password, rol) VALUES (NULL, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO usuarios (id, nombre, correo, contraseña, rol) VALUES (NULL, ?, ?, ?, ?)");
     $stmt->bind_param("ssss", $nombre, $email, $password, $rol);
 
     if ($stmt->execute()) {

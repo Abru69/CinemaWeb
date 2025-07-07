@@ -280,3 +280,53 @@ select option {
     font-size: 0.95rem;
   }
 }
+
+.btn-eliminar {
+    background: #ff4d4f;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    box-shadow: 0 2px 8px rgba(255,77,79,0.08);
+}
+.btn-eliminar:hover {
+    background: #d9363e;
+    transform: scale(1.07);
+}
+.comprobante {
+    background: #22344a;
+    border: 2px solid #35506b;
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 400px;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(53,80,107,0.12);
+}
+.comprobante h2 {
+    color: #4fc3f7;
+    margin-bottom: 1.5rem;
+}
+.comprobante p {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+}
+.comprobante .btn-reservar {
+    background: #35506b;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-weight: bold;
+    margin-top: 1.5rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+.comprobante .btn-reservar:hover {
+    background: #22344a;
+    transform: scale(1.07);
+}

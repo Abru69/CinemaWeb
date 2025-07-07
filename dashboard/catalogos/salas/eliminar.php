@@ -3,11 +3,11 @@ include('../../../includes/session.php');
 verificarRol('admin');
 include('../../../includes/db.php');
 
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+if (isset($_GET['sala'])) {
+    $sala = $_GET['sala'];
 
-    $stmt = $conn->prepare("DELETE FROM salas WHERE id = ?");
-    $stmt->bind_param("i", $id);
+    $stmt = $conn->prepare("DELETE FROM funciones WHERE sala = ?");
+    $stmt->bind_param("s", $sala);
 
     if ($stmt->execute()) {
         header("Location: index.php");

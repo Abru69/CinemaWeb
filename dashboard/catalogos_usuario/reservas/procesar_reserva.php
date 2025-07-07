@@ -1,11 +1,11 @@
 <?php
-include('../../includes/session.php');
+include('../../../includes/session.php');
 verificarRol('cliente');
-include('../../includes/db.php');
+include('../../../includes/db.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id_usuario = $_SESSION['id'];
-    $id_funcion = intval($_POST['id_funcion']);
+    $usuario_id = $_SESSION['id'];
+    $funcion_id = intval($_POST['id_funcion']);
     $asientos = $_POST['asientos'] ?? [];
 
     if (empty($asientos)) {
@@ -13,20 +13,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Prevenir asientos duplicados
-    $stmt_check = $conn->prepare("SELECT asiento FROM reservas WHERE id_funcion = ? AND asiento = ?");
-    $stmt_insert = $conn->prepare("INSERT INTO reservas (id_usuario, id_funcion, asiento) VALUES (?, ?, ?)");
+    $stmt_check = $conn->prepare("SELECT id FROM asientos_reservados WHERE funcion_id = ? AND asiento = ?");
+    $stmt_insert = $conn->prepare("INSERT INTO asientos_reservados (usuario_id, funcion_id, asiento, confirmado) VALUES (?, ?, ?, 0)");
 
     $insertados = 0;
+    $asientos_ids = [];
     foreach ($asientos as $asiento) {
-        $stmt_check->bind_param("is", $id_funcion, $asiento);
+        $stmt_check->bind_param("is", $funcion_id, $asiento);
         $stmt_check->execute();
         $stmt_check->store_result();
         if ($stmt_check->num_rows === 0) {
-            // Asiento disponible, insertar
-            $stmt_insert->bind_param("iis", $id_usuario, $id_funcion, $asiento);
+            $stmt_insert->bind_param("iis", $usuario_id, $funcion_id, $asiento);
             if ($stmt_insert->execute()) {
                 $insertados++;
+                $asientos_ids[] = $conn->insert_id;
             }
         }
     }
@@ -36,7 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn->close();
 
     if ($insertados > 0) {
-        echo json_encode(['status' => 'success', 'message' => "$insertados asiento(s) reservados correctamente."]);
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Reserva realizada correctamente.',
+            'asientos_ids' => $asientos_ids
+        ]);
+        exit;
     } else {
         echo json_encode(['status' => 'error', 'message' => "Los asientos seleccionados ya están ocupados."]);
     }

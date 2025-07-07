@@ -3,78 +3,89 @@ include('../../../includes/db.php');
 include('../../../includes/session.php');
 verificarRol('admin');
 
-if (!isset($_GET['id'])) {
+// Recibe el nombre de la sala por GET
+if (!isset($_GET['sala'])) {
     header('Location: index.php');
     exit;
 }
 
-$id = intval($_GET['id']);
-$stmt = $conn->prepare("SELECT * FROM salas WHERE id = ?");
-$stmt->bind_param("i", $id);
+$sala_vieja = $_GET['sala'];
+
+// Obtén la capacidad máxima actual de la sala
+$stmt = $conn->prepare("SELECT MAX(total_asientos) as capacidad FROM funciones WHERE sala = ?");
+$stmt->bind_param("s", $sala_vieja);
 $stmt->execute();
 $result = $stmt->get_result();
-$sala = $result->fetch_assoc();
-
-if (!$sala) {
-    echo "Sala no encontrada.";
-    exit;
-}
-
-$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+$row = $result->fetch_assoc();
+$capacidad_actual = $row ? $row['capacidad'] : 0;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        if ($isAjax) {
-            header('Content-Type: application/xml');
-            echo '<response><status>error</status><message>Token CSRF inválido.</message></response>';
-            exit;
-        }
-        exit('Token CSRF inválido.');
-    }
-
-    $numero = trim($_POST['numero']);
-    $tipo = trim($_POST['tipo']);
-    $capacidad = trim($_POST['capacidad']);
+    $sala_nueva = trim($_POST['sala_nueva']);
+    $nueva_capacidad = intval($_POST['nueva_capacidad']);
 
     $errores = [];
-    if (!$numero || !$tipo || !$capacidad) {
-        $errores[] = "Todos los campos son obligatorios.";
-    }
-    if (!ctype_digit($capacidad)) {
-        $errores[] = "La capacidad debe ser un número válido.";
+    if (!$sala_nueva || $nueva_capacidad < 1) {
+        $errores[] = "Todos los campos son obligatorios y la capacidad debe ser mayor a 0.";
     }
 
-    if (!empty($errores)) {
-        if ($isAjax) {
-            header('Content-Type: application/xml');
-            echo '<response><status>error</status><message>' . htmlspecialchars(implode(' ', $errores)) . '</message></response>';
-            exit;
+    // Validar para cada función de la sala
+    $stmt = $conn->prepare("SELECT id FROM funciones WHERE sala = ?");
+    $stmt->bind_param("s", $sala_vieja);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    while ($funcion = $result->fetch_assoc()) {
+        $funcion_id = $funcion['id'];
+        // Obtener todos los asientos reservados
+        $stmt2 = $conn->prepare("SELECT asiento FROM asientos_reservados WHERE funcion_id = ?");
+        $stmt2->bind_param("i", $funcion_id);
+        $stmt2->execute();
+        $result2 = $stmt2->get_result();
+
+        $filas = [];
+        while ($row = $result2->fetch_assoc()) {
+            // Ejemplo de asiento: "A10", "B3", etc.
+            if (preg_match('/^([A-Z])(\d+)$/i', $row['asiento'], $matches)) {
+                $fila = strtoupper($matches[1]);
+                $num = intval($matches[2]);
+                if (!isset($filas[$fila]) || $num > $filas[$fila]) {
+                    $filas[$fila] = $num;
+                }
+            }
         }
-        echo implode('<br>', array_map('htmlspecialchars', $errores));
-        exit;
-    }
+        $stmt2->close();
 
-    $stmt = $conn->prepare("UPDATE salas SET numero = ?, tipo = ?, capacidad = ? WHERE id = ?");
-    $stmt->bind_param("isii", $numero, $tipo, $capacidad, $id);
-
-    if ($isAjax) header('Content-Type: application/xml');
-    if ($stmt->execute()) {
-        if ($isAjax) {
-            echo '<response><status>success</status><message>Sala actualizada correctamente.</message></response>';
-            exit;
+        if (!empty($filas)) {
+            // Ordenar filas por letra
+            ksort($filas);
+            $letras = array_keys($filas);
+            $ultima_fila = end($letras);
+            $capacidad_minima = 0;
+            foreach ($filas as $fila => $max_num) {
+                if ($fila !== $ultima_fila) {
+                    $capacidad_minima += 10; 
+                } else {
+                    $capacidad_minima += $max_num;
+                }
+            }
+            if ($nueva_capacidad < $capacidad_minima) {
+                $errores[] = "No puedes reducir la capacidad de la función por debajo de $capacidad_minima, ya que el asiento reservado más alto es $ultima_fila{$filas[$ultima_fila]}.";
+            }
         }
+    }
+    $stmt->close();
+
+    if (empty($errores)) {
+        // Cambia el nombre de la sala y la capacidad en todas las funciones
+        $stmt = $conn->prepare("UPDATE funciones SET sala = ?, total_asientos = ? WHERE sala = ?");
+        $stmt->bind_param("sis", $sala_nueva, $nueva_capacidad, $sala_vieja);
+        $stmt->execute();
+
         header("Location: index.php");
         exit;
-    } else {
-        if ($isAjax) {
-            echo '<response><status>error</status><message>Error al actualizar la sala.</message></response>';
-            exit;
-        }
-        echo "Error al actualizar.";
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -102,47 +113,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="stats-section">
+        <?php if (!empty($errores)): ?>
+            <div style="color:#ff4d4d; text-align:center;"><?= implode('<br>', array_map('htmlspecialchars', $errores)) ?></div>
+        <?php endif; ?>
         <form method="POST" id="form-editar">
-            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-
             <div class="form-group">
-                <label>Número de sala:</label>
-                <input type="text" name="numero" value="<?= htmlspecialchars($sala['numero']) ?>" required>
+                <label>Nombre de sala:</label>
+                <input type="text" name="sala_nueva" value="<?= htmlspecialchars($sala_vieja) ?>" required>
             </div>
             <div class="form-group">
-                <label>Tipo:</label>
-                <input type="text" name="tipo" value="<?= htmlspecialchars($sala['tipo']) ?>" required>
-            </div>
-            <div class="form-group">
-                <label>Capacidad:</label>
-                <input type="text" name="capacidad" value="<?= htmlspecialchars($sala['capacidad']) ?>" required>
+                <label>Capacidad (asientos):</label>
+                <input type="number" name="nueva_capacidad" value="<?= htmlspecialchars($capacidad_actual) ?>" min="1" required>
             </div>
             <button type="submit" class="btn btn-primary">Guardar cambios</button>
             <a href="index.php" class="btn logout-btn">Cancelar</a>
         </form>
     </div>
 </main>
-
-<script>
-document.getElementById('form-editar').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const form = e.target;
-    const formData = new FormData(form);
-
-    fetch('', {
-        method: 'POST',
-        body: formData,
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    })
-    .then(res => res.text())
-    .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
-    .then(data => {
-        const status = data.querySelector('status').textContent;
-        const msg = data.querySelector('message').textContent;
-        alert(msg);
-        if (status === 'success') window.location.href = 'index.php';
-    });
-});
-</script>
 </body>
 </html>

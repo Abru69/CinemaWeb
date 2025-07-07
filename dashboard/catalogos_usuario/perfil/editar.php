@@ -4,7 +4,7 @@ verificarRol('cliente');
 include('../../../includes/db.php');
 
 $nombre_actual = $_SESSION['nombre'];
-$email = isset($_SESSION['email']) ? $_SESSION['email'] : 'No disponible';
+$email = isset($_SESSION['correo']) ? $_SESSION['correo'] : 'No disponible';
 $mensaje = "";
 $tipo_mensaje = "";
 
@@ -22,25 +22,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mensaje .= "Nombre actualizado correctamente. ";
             $tipo_mensaje = "exito";
         }
+        $stmt->close();
     }
     
     if (!empty($nueva_contraseña)) {
         if (strlen($nueva_contraseña) >= 6) {
             $hash = password_hash($nueva_contraseña, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("UPDATE usuarios SET password = ? WHERE id = ?");
+            // Cambia 'password' por 'contraseña'
+            $stmt = $conn->prepare("UPDATE usuarios SET contraseña = ? WHERE id = ?");
             $stmt->bind_param("si", $hash, $id_usuario);
             if ($stmt->execute()) {
                 $mensaje .= "Contraseña actualizada correctamente.";
                 $tipo_mensaje = "exito";
             }
+            $stmt->close();
         } else {
             $mensaje = "La contraseña debe tener al menos 6 caracteres.";
             $tipo_mensaje = "error";
         }
-    }
-    
-    if (isset($stmt)) {
-        $stmt->close();
     }
 }
 ?>
@@ -66,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="user-avatar"><?= strtoupper(substr($_SESSION['nombre'], 0, 1)) ?></div>
                 <div class="dropdown-content">
                     <a href="perfil.php">Mi Perfil</a>
-                    <a href="logout.php">Cerrar Sesión</a>
+                    <a href="../../../logout.php">Cerrar Sesión</a>
                 </div>
             </div>
         </div>
@@ -87,21 +86,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-group">
                 <label for="nombre">Nuevo Nombre:</label>
                 <input type="text" 
-                       id="nombre" 
-                       name="nombre" 
-                       value="<?= htmlspecialchars($nombre_actual) ?>" 
-                       required 
-                       minlength="2"
-                       maxlength="50">
+                        id="nombre" 
+                        name="nombre" 
+                        value="<?= htmlspecialchars($nombre_actual) ?>" 
+                        required 
+                        minlength="2"
+                        maxlength="50">
             </div>
             
             <div class="form-group">
                 <label for="password">Nueva Contraseña (opcional):</label>
                 <input type="password" 
-                       id="password" 
-                       name="password" 
-                       placeholder="Deja en blanco si no deseas cambiarla"
-                       minlength="6">
+                        id="password" 
+                        name="password" 
+                        placeholder="Deja en blanco si no deseas cambiarla"
+                        minlength="6">
             </div>
             
             <button type="submit" class="btn-primary" id="btn-guardar">

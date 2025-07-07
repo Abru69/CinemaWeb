@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
     // Insertar en la BD
-    $stmt = $conn->prepare("INSERT INTO usuarios (nombre, email, password, rol) VALUES (?, ?, ?, 'cliente')");
+    $stmt = $conn->prepare("INSERT INTO usuarios (nombre, correo, contraseña, rol) VALUES (?, ?, ?, 'cliente')");
     $stmt->bind_param("sss", $nombre, $email, $passwordHash);
 
     if ($stmt->execute()) {

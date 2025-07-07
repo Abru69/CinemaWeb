@@ -49,8 +49,8 @@ include('includes/db.php'); // Conexión a la base de datos
                         $id = (int)$pelicula['id'];
                         $titulo = htmlspecialchars($pelicula['titulo']);
                         $genero = htmlspecialchars($pelicula['genero']);
-                        $duracion = htmlspecialchars($pelicula['duracion']);
-                        $imagen = htmlspecialchars($pelicula['imagen']);
+                        $duracion = htmlspecialchars($pelicula['duracion_min']);
+                        $imagen = htmlspecialchars($pelicula['imagen_url']);
 
                         echo '<div class="movie-card">';
                         echo '  <div class="movie-poster">';
@@ -61,7 +61,7 @@ include('includes/db.php'); // Conexión a la base de datos
                         echo '    <p class="movie-genre">' . $genero . ' • ' . $duracion . '</p>';
 
                         // Funciones seguras
-                        $funciones_query = "SELECT hora FROM funciones WHERE id_pelicula = ? ORDER BY hora ASC";
+                        $funciones_query = "SELECT hora FROM funciones WHERE pelicula_id = ? ORDER BY hora ASC";
                         $func_stmt = $conn->prepare($funciones_query);
                         $func_stmt->bind_param("i", $id);
                         $func_stmt->execute();

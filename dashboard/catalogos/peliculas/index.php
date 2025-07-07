@@ -53,7 +53,7 @@ $resultado = $conn->query("SELECT * FROM peliculas");
                         <div class="stat-item">
                             <div class="stat-number"><?= htmlspecialchars($pelicula['titulo']) ?></div>
                             <div class="stat-label">
-                                <?= htmlspecialchars($pelicula['genero']) ?> | <?= htmlspecialchars($pelicula['duracion']) ?>
+                                <?= htmlspecialchars($pelicula['genero']) ?> | <?= htmlspecialchars($pelicula['duracion_min']) ?> min
                             </div>
                             <div>
                                 <a href="editar.php?id=<?= $pelicula['id'] ?>" class="btn btn-primary">

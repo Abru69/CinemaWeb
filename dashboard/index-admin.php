@@ -4,7 +4,7 @@ verificarRol('admin');
 include('../includes/db.php');
 
 $peliculas = $conn->query("SELECT COUNT(*) as total FROM peliculas")->fetch_assoc()['total'];
-$salas = $conn->query("SELECT COUNT(*) as total FROM salas")->fetch_assoc()['total'];
+$salas = $conn->query("SELECT COUNT(DISTINCT sala) as total FROM funciones")->fetch_assoc()['total'];
 $funciones = $conn->query("SELECT COUNT(*) as total FROM funciones")->fetch_assoc()['total'];
 $usuarios = $conn->query("SELECT COUNT(*) as total FROM usuarios")->fetch_assoc()['total'];
 

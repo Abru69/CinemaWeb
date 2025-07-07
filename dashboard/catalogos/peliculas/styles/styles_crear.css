@@ -179,12 +179,12 @@ form {
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.2rem;
 }
 
 label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
     color: #d8d8d8;
     font-weight: 500;
     font-size: 1rem;
@@ -192,20 +192,21 @@ label {
 
 input[type="text"],
 input[type="file"],
+input[type="number"],
 textarea {
-    width: 100%;
-    padding: 0.8rem;
-    border: 2px solid #35506b;
-    border-radius: 8px;
+    padding: 0.6rem;
     background-color: #35506b;
     color: white;
+    border: 2px solid #35506b;
+    border-radius: 8px;
     font-size: 1rem;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    font-family: Arial, sans-serif;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 input[type="text"]:focus,
 input[type="file"]:focus,
+input[type="number"]:focus,
 textarea:focus {
     outline: none;
     border-color: #ffc857;
@@ -310,6 +311,7 @@ footer {
 
     input[type="text"],
     input[type="file"],
+    input[type="number"],
     textarea {
         padding: 0.6rem;
     }

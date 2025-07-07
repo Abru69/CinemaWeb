@@ -52,47 +52,10 @@ $inicial = strtoupper(substr($nombre, 0, 1));
             <h2 class="section-title">Cartelera <span class="gold-accent">Actual</span></h2>
             <div style="margin-bottom: 2rem; text-align: center;">
                 <input type="text" id="buscador" placeholder="Buscar por título, género o clasificación...">
+                <button id="btn-limpiar" class="btn logout-btn" style="display:none;">Limpiar</button>
             </div>
-            <!-- Resultados -->
             <div class="movies-grid" id="resultados">
-                <!-- Aquí se cargan las películas dinámicamente -->
-            </div>
-            <div class="movies-grid">
-                <?php
-                $peliculas = $conn->query("SELECT * FROM peliculas");
-
-                if ($peliculas->num_rows > 0) {
-                    while ($peli = $peliculas->fetch_assoc()) {
-                        echo '<div class="movie-card">';
-                        echo '  <div class="movie-poster">';
-                        echo "    <img src='../images/{$peli['imagen']}' alt='{$peli['titulo']}' style='width: AUTO; height: 100%; object-fit: cover;'>";
-                        echo '  </div>';
-                        echo '  <div class="movie-info">';
-                        echo '    <h3 class="movie-title">' . htmlspecialchars($peli['titulo']) . '</h3>';
-                        echo '    <p class="movie-genre">' . htmlspecialchars($peli['genero']) . ' • ' . htmlspecialchars($peli['duracion']) . '</p>';
-                        echo '    <div class="movie-times">';
-
-                        $id_peli = $peli['id'];
-                        $funciones = $conn->query("SELECT hora FROM funciones WHERE id_pelicula = $id_peli ORDER BY hora ASC");
-                        if ($funciones && $funciones->num_rows > 0) {
-                            while ($f = $funciones->fetch_assoc()) {
-                                echo '<span class="time-slot">' . substr($f['hora'], 0, 5) . '</span>';
-                            }
-                        } else {
-                            echo '<span class="time-slot">Próximamente</span>';
-                        }
-
-                        echo '    </div>';
-                        echo '<a href="catalogos_usuario/detalles_peliculas/detalles_pelicula.php?id=' . $peli['id'] . '" class="btn btn-primary" style="margin-top: 1rem;">Ver detalles</a>';
-                        echo '  </div>';
-                        echo '</div>';
-                    }
-                } else {
-                    echo '<p style="text-align:center;">No hay películas disponibles por el momento.</p>';
-                }
-
-                $conn->close();
-                ?>
+                <!-- Aquí AJAX pondrá los resultados -->
             </div>
         </section>
     </main>
@@ -101,6 +64,59 @@ $inicial = strtoupper(substr($nombre, 0, 1));
         <p>&copy; 2024 <span class="gold-accent">CinemaWeb</span>. Todos los derechos reservados.</p>
         <p>Dirección: Av. Principal 123, Ciudad • Teléfono: (555) 123-4567</p>
     </footer>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const buscador = document.getElementById('buscador');
+    const resultados = document.getElementById('resultados');
+    const btnLimpiar = document.getElementById('btn-limpiar');
+
+    function buscarPeliculas(q = '') {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'buscar_peliculas.php?q=' + encodeURIComponent(q), true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                resultados.innerHTML = xhr.responseText;
+            }
+        };
+        xhr.send();
+    }
+
+    // Cargar todo el catálogo al inicio
+    buscarPeliculas();
+
+    // Filtrar automáticamente al escribir
+    buscador.addEventListener('input', function() {
+        buscarPeliculas(this.value);
+        btnLimpiar.style.display = this.value.trim() !== '' ? 'inline-block' : 'none';
+    });
+
+    btnLimpiar.addEventListener('click', function() {
+        buscador.value = '';
+        buscarPeliculas('');
+        btnLimpiar.style.display = 'none';
+    });
+});
+</script>
 </body>
 
 </html>
+<?php
+// ... después de insertar la reserva ...
+$reserva_id = $conn->insert_id;
+echo json_encode([
+    'status' => 'success',
+    'message' => 'Reserva realizada correctamente.',
+    'reserva_id' => $reserva_id
+]);
+exit;
+?>
+<script>
+    // Suponiendo que el código para manejar la reserva está aquí
+    // ... código de reserva ...
+    .then(data => {
+        if (data.status === 'success') {
+            window.location.href = '../reservas/pago.php?reserva_id=' + encodeURIComponent(data.reserva_id);
+        }
+    })
+</script>
