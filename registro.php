@@ -23,33 +23,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
     $lastName = trim($_POST['lastName'] ?? '');
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $phone = trim($_POST['phone'] ?? '');
-    $password = $_POST['password'] ?? '';
-    $confirmPassword = $_POST['confirmPassword'] ?? '';
+    $contraseña = $_POST['contraseña'] ?? '';
+    $confirmcontraseña = $_POST['confirmcontraseña'] ?? '';
 
     $nombre = $firstName . ' ' . $lastName;
 
     // Validaciones
-    if (empty($firstName) || empty($lastName) || empty($email) || empty($phone) || empty($password) || empty($confirmPassword)) {
+    if (empty($firstName) || empty($lastName) || empty($email) || empty($phone) || empty($contraseña) || empty($confirmcontraseña)) {
         echo '<response><status>error</status><message>Todos los campos son obligatorios.</message></response>';
         exit;
     }
 
-    if ($password !== $confirmPassword) {
+    if ($contraseña !== $confirmcontraseña) {
         echo '<response><status>error</status><message>Las contraseñas no coinciden.</message></response>';
         exit;
     }
 
-    if (strlen($password) < 8) {
+    if (strlen($contraseña) < 8) {
         echo '<response><status>error</status><message>La contraseña debe tener al menos 8 caracteres.</message></response>';
         exit;
     }
 
     // Encriptar contraseña
-    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+    $contraseñaHash = contraseña_hash($contraseña, contraseña_DEFAULT);
 
     // Insertar en la BD
     $stmt = $conn->prepare("INSERT INTO usuarios (nombre, correo, contraseña, rol) VALUES (?, ?, ?, 'cliente')");
-    $stmt->bind_param("sss", $nombre, $email, $passwordHash);
+    $stmt->bind_param("sss", $nombre, $email, $contraseñaHash);
 
     if ($stmt->execute()) {
         echo '<response><status>success</status><message>login.php?registro=exitoso</message></response>';
@@ -100,16 +100,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
             </div>
 
             <div class="form-group">
-                <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" required>
-                <div class="password-requirements">
+                <label for="contraseña">Contraseña</label>
+                <input type="contraseña" id="contraseña" name="contraseña" required>
+                <div class="contraseña-requirements">
                     Mínimo 8 caracteres, incluye mayúsculas, minúsculas y números
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="confirmPassword">Confirmar contraseña</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                <label for="confirmcontraseña">Confirmar contraseña</label>
+                <input type="contraseña" id="confirmcontraseña" name="confirmcontraseña" required>
             </div>
 
             <input type="hidden" id="csrf_token" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">

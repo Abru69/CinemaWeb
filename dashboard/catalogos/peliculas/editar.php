@@ -43,10 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sinopsis = trim($_POST['sinopsis']);
     $clasificacion = trim($_POST['clasificacion']);
     $duracion_min = intval($_POST['duracion_min']);
+    $fecha_estreno = $_POST['fecha_estreno'];
 
     // Validaciones básicas
     $errores = [];
-    if (!$titulo || !$genero || !$sinopsis || !$clasificacion || !$duracion_min) {
+    if (!$titulo || !$genero || !$sinopsis || !$clasificacion || !$duracion_min || !$fecha_estreno) {
         $errores[] = "Todos los campos son obligatorios.";
     }
 
@@ -78,9 +79,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Actualizar película
-    $update = $conn->prepare("UPDATE peliculas SET titulo = ?, genero = ?, sinopsis = ?, clasificacion = ?, duracion_min = ?, imagen_url = ? WHERE id = ?");
-    $update->bind_param("ssssisi", $titulo, $genero, $sinopsis, $clasificacion, $duracion_min, $imagenNombre, $id);
+    // Actualizar película con fecha_estreno
+    $update = $conn->prepare("UPDATE peliculas SET titulo = ?, genero = ?, sinopsis = ?, clasificacion = ?, duracion_min = ?, imagen_url = ?, fecha_estreno = ? WHERE id = ?");
+    $update->bind_param("ssssissi", $titulo, $genero, $sinopsis, $clasificacion, $duracion_min, $imagenNombre, $fecha_estreno, $id);
 
     if ($isAjax) header('Content-Type: application/xml');
     if ($update->execute()) {
@@ -140,6 +141,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="imagen">Imagen (poster):</label>
                 <input type="file" id="imagen" name="imagen" accept="image/*">
                 <small>Si no seleccionas una imagen, se mantendrá la actual.</small>
+            </div>
+            <div class="form-group">
+                <label for="fecha_estreno">Fecha de Estreno:</label>
+                <input type="date" id="fecha_estreno" name="fecha_estreno" 
+       value="<?= !empty($pelicula['fecha_estreno']) ? htmlspecialchars($pelicula['fecha_estreno']) : '' ?>" required>
+
             </div>
             <button type="submit" class="btn btn-primary">Guardar cambios</button>
             <a href="index.php" class="btn logout-btn">Cancelar</a>

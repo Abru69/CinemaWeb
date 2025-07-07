@@ -47,10 +47,10 @@ include('includes/db.php'); // Conexión a la base de datos
                 if ($result->num_rows > 0) {
                     while ($pelicula = $result->fetch_assoc()) {
                         $id = (int)$pelicula['id'];
-                        $titulo = htmlspecialchars($pelicula['titulo']);
-                        $genero = htmlspecialchars($pelicula['genero']);
-                        $duracion = htmlspecialchars($pelicula['duracion_min']);
-                        $imagen = htmlspecialchars($pelicula['imagen_url']);
+                        $titulo = htmlspecialchars($pelicula['titulo'] ?? 'Sin título');
+                        $genero = htmlspecialchars($pelicula['genero'] ?? 'Sin género');
+                        $duracion = isset($pelicula['duracion_min']) && $pelicula['duracion_min'] !== null ? htmlspecialchars($pelicula['duracion_min']) . ' min' : 'N/A';
+                        $imagen = isset($pelicula['imagen_url']) && $pelicula['imagen_url'] !== '' ? htmlspecialchars($pelicula['imagen_url']) : 'placeholder.png';
 
                         echo '<div class="movie-card">';
                         echo '  <div class="movie-poster">';

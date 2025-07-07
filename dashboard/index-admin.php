@@ -3,9 +3,16 @@ include('../includes/session.php');
 verificarRol('admin');
 include('../includes/db.php');
 
+// Total de películas
 $peliculas = $conn->query("SELECT COUNT(*) as total FROM peliculas")->fetch_assoc()['total'];
+
+// Total de salas (DISTINCT sala en funciones)
 $salas = $conn->query("SELECT COUNT(DISTINCT sala) as total FROM funciones")->fetch_assoc()['total'];
+
+// Total de funciones
 $funciones = $conn->query("SELECT COUNT(*) as total FROM funciones")->fetch_assoc()['total'];
+
+// Total de usuarios
 $usuarios = $conn->query("SELECT COUNT(*) as total FROM usuarios")->fetch_assoc()['total'];
 
 $admin_nombre = $_SESSION['nombre'];

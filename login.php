@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
 
     // Sanitizar entrada
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    $password = $_POST['password'] ?? '';
+    $contraseña = $_POST['contraseña'] ?? '';
 
     $stmt = $conn->prepare("SELECT id, nombre, correo, contraseña, rol FROM usuarios WHERE correo = ?");
     $stmt->bind_param("s", $email);
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
     if ($resultado && $resultado->num_rows === 1) {
         $usuario = $resultado->fetch_assoc();
 
-        if (password_verify($password, $usuario['contraseña'])) {
+        if (password_verify($contraseña, $usuario['contraseña'])) {
             $_SESSION['id'] = $usuario['id'];
             $_SESSION['nombre'] = $usuario['nombre'];
             $_SESSION['correo'] = $usuario['correo']; 
@@ -79,8 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
             </div>
 
             <div class="form-group">
-                <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" required>
+                <label for="contraseña">Contraseña</label>
+                <input type="contraseña" id="contraseña" name="contraseña" required>
             </div>
 
             <!-- Token CSRF oculto -->
@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
 
         <div id="responseMessage" style="text-align:center; margin-top:10px;"></div>
 
-        <div class="forgot-password">
+        <div class="forgot-contraseña">
             <a href="#">¿Olvidaste tu contraseña?</a>
         </div>
 
@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
         e.preventDefault();
 
         const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
+        const contraseña = document.getElementById('contraseña').value;
         const csrf_token = document.getElementById('csrf_token').value;
 
         const xhr = new XMLHttpRequest();
@@ -119,7 +119,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
+                console.log(xhr.responseText); // <-- Agrega esto
                 const xml = xhr.responseXML;
+                if (!xml) {
+                    document.getElementById('responseMessage').innerHTML =
+                        `<span style="color:red;">Error de formato en la respuesta del servidor.</span>`;
+                    return;
+                }
                 const status = xml.getElementsByTagName('status')[0].textContent;
                 const message = xml.getElementsByTagName('message')[0].textContent;
 
@@ -132,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
             }
         };
 
-        const params = `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}&csrf_token=${encodeURIComponent(csrf_token)}`;
+        const params = `email=${encodeURIComponent(email)}&contraseña=${encodeURIComponent(contraseña)}&csrf_token=${encodeURIComponent(csrf_token)}`;
         xhr.send(params);
     });
     </script>
